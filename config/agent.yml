@@ -1,0 +1,65 @@
+# OOO agent configuration. Edit this file to tune behaviour; skills read it on every run.
+
+owner:
+  name: Pujjal Khanal
+  email: pujjal.khanal@panaseer.com
+  slack_user_id: U08MDVA8DD5      # the ONLY Slack destination the agent may post to (self-DM)
+  timezone: America/Chicago        # Outlook mailbox is on Central Standard Time
+
+# How the agent spots an upcoming OOO in Outlook.
+ooo_detection:
+  look_ahead_days: 14
+  show_as: [oof]                   # Outlook "Out of office" status
+  subject_keywords: [OOO, "Out of office", PTO, "Annual leave", Holiday, Vacation]
+
+# Daily brief while OOO, catch-up brief on return.
+briefing:
+  daily_brief_run_hour: 7          # only the morning run sends the daily brief
+  max_items_per_section: 8
+  tiers:
+    - name: "Must know: CS & Engineering"
+      emoji: "🔴"
+      include: all_substantive
+      channels:
+        - { name: cs-just-us, id: C02C6SP9XAL }
+        - { name: horizons-and-friends, id: C011REH7CAJ }
+        - { name: engineering-just-us, id: C0ATW2M1T }
+        - { name: engineering-and-friends, id: CQB4HUCHH }
+        - { name: product-engineering-kb, id: C03MWJYCYAC }
+    - name: "Product changes"
+      emoji: "🟠"
+      include: changes_only
+      channels:
+        - { name: release-notes, id: C081PK7UC2D }
+        - { name: product-pf-updates, id: C0977KPUHTQ }
+        - { name: product_and_friends, id: CMD9X47TN }
+        - { name: feature-flags-prod, id: C04NVRP759Q }
+        - { name: version-deployment-info, id: C04MAG4CDK5 }
+        - { name: cust-upgrade-announcements, id: C01BM90JNF5 }
+    - name: "Infra / AWS"
+      emoji: "🟡"
+      include: changes_only
+      channels:
+        - { name: cloud-infra-and-friends, id: CDAS04F27 }
+        - { name: cloud-infra-review, id: C058Y5C4V7B }
+        - { name: aws-news, id: C02A6NHBE59 }
+        - { name: platform-security, id: C9R1KTM0B }
+        - { name: eng-incident-response-just-us, id: C035GJ63LBH }
+    - name: "Org FYI"
+      emoji: "⚪"
+      include: announcements_only
+      channels:
+        - { name: general, id: C0473MYFR }
+        - { name: hub-us, id: CSRKFFZU0 }
+
+  # Promote an item to a higher tier when it matches these.
+  change_keywords: [policy, process, deprecat, migrat, mandatory, "breaking change", rollout, release,
+                    upgrade, outage, incident, AWS, terraform, infrastructure, "action required"]
+
+  # Never read: noisy automation, and channels the owner opted out of.
+  exclude_channel_patterns: ["ops-alerts-*", "horizons-automated-alerts*", "devops-failed-builds",
+                             "delivery-*", "*-squad*"]
+
+  extra_sources:
+    outlook_mail: leadership / all-staff mail received during the window (read-only)
+    outlook_calendar: meetings missed during the window (subjects only)
