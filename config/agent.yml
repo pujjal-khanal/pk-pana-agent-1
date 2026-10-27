@@ -15,7 +15,8 @@ ooo_detection:
 # Daily brief while OOO, catch-up brief on return.
 briefing:
   daily_brief_run_hour: 7          # only the morning run sends the daily brief
-  max_items_per_section: 8
+  max_items_per_section: 3         # headlines only; owner wants a TL;DR-style brief
+  max_words_per_item: 20
   tiers:
     - name: "Must know: CS & Engineering"
       emoji: "🔴"
@@ -41,8 +42,10 @@ briefing:
       include: changes_only
       channels:
         - { name: cloud-infra-and-friends, id: CDAS04F27 }
-        - { name: cloud-infra-review, id: C058Y5C4V7B }
-        - { name: aws-news, id: C02A6NHBE59 }
+        # PR-review feed: only items changing AWS/platform access or behaviour the owner relies on
+        - { name: cloud-infra-review, id: C058Y5C4V7B, only_if: [AWS, IAM, SSM, SSH, bastion, EMR, egress, migrat, retire] }
+        # Generic AWS news: only services the platform uses
+        - { name: aws-news, id: C02A6NHBE59, only_if: [EMR, Athena, RDS, "Step Functions", SSM, Glue, S3, Snowflake] }
         - { name: platform-security, id: C9R1KTM0B }
         - { name: eng-incident-response-just-us, id: C035GJ63LBH }
     - name: "Org FYI"

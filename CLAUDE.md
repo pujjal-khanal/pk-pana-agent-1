@@ -26,4 +26,5 @@ Fresh sessions keep no memory. State lives in the owner's self-DM:
   Replies are messages in that thread without the `🤖 *OOO agent*` prefix.
 
 Marker kinds: `ooo-detected`, `autoreply-text`, `daily-brief`, `catchup-ask`, `catchup-brief`.
+`test-brief` markers come from manual test runs; ignore them when deciding what to send.
 `<key>` for OOO-scoped markers is `<start-date>..<end-date>` (ISO dates, owner timezone).

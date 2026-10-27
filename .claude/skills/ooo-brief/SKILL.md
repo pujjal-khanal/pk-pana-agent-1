@@ -10,7 +10,8 @@ description: Scenario 2. Builds a read-only brief of the most important org-wide
 - `catchup`: the whole OOO window, `start 00:00` → `now`.
 
 ## Collect (read-only)
-For each channel in `briefing.tiers` (skip anything matching `exclude_channel_patterns`):
+For each channel in `briefing.tiers` (skip anything matching `exclude_channel_patterns`; for channels with
+`only_if`, keep only messages matching one of those keywords, case-insensitive):
 - `slack_read_channel` with `oldest`/`latest` set to the window (concise format). Open threads
   (`slack_read_thread`) only for messages with ≥3 replies or matching `change_keywords`.
 - Skip bot noise, joins/leaves, emoji-only, and pure chit-chat.
@@ -28,21 +29,22 @@ Extra sources:
 - Respect the customer data rule in CLAUDE.md: conclusions only, no pasted data.
 
 ## Format and send
-One self-DM message (split into consecutive messages only if over ~4,500 chars):
+The owner wants it **short, TL;DR style**. One self-DM message, aim for under ~1,200 characters
+(catchup may be up to ~2,500):
 ```
-🤖 *OOO agent* — <Daily brief <date> | Catch-up brief <start>–<end>>
-*TL;DR:* <2–3 sentences: the things you must know>
+🤖 *OOO agent*: <Daily brief <date> | Catch-up brief <start>–<end>>
+*TL;DR*
+• <the 1–3 things that matter most, any tier>
 
-🔴 *Must know: CS & Engineering*
-• <one line: what changed / what was decided — who> <permalink>
-🟠 *Product changes*
-• …
-🟡 *Infra / AWS*
-• …
-⚪ *Org FYI*
-• …
-📅 *Meetings you missed* (catchup only)
-• …
+🔴 <headline ≤ max_words_per_item> <link>
+🟠 <headline> <link>
+🟡 <headline> <link>
+⚪ <headline> <link>
+📅 Missed: <meeting>, <meeting> (catchup only)
 `ooo-agent:<daily-brief:<date> | catchup-brief:<start>..<end>>`
 ```
-Omit empty sections; if everything is empty send "Quiet day — nothing notable." with the marker.
+- One line per item, prefixed by its tier emoji; at most `max_items_per_section` per tier, highest tier first.
+- Headlines only: what changed + what (if anything) the owner needs to do. No background or quotes.
+- Flag breaking changes or actions for the owner with ⚠️.
+- Link to the source thread/page where available, else name the channel.
+- If nothing is notable, send "Quiet day, nothing notable." with the marker.
